@@ -11,6 +11,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict #for multidict structure
+from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 
 
 #currently don't use this f(x), instead copied this code in main()
@@ -31,16 +32,16 @@ def get_MW(mmcif_dict):
     #date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
     #print(date)
     mass = mmcif_dict["_entity.formula_weight"]
-    print(mass)
+    #print(mass)
     weight = 0
     for unit in mass:
         weight += float(unit)
-    print(weight)
+    #print(weight)
     return weight
 
 def get_date(mmcif_dict):
     date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
-    print(date)
+    #print(date)
     return date
 
 
@@ -81,25 +82,28 @@ def main():
     #tuple = (get_date(mmcif_dict), get_MW(mmcif_dict))
 
     directory = '/databases/mol/mmCIF'
-    dict = {}
+    dict = defaultdict(list)
 
-    #for directory2 in os.listdir(directory)
-    for filename in os.listdir(directory): #(directory2)
-        if filename.endswith(".cif"):
+    for subdirectory in os.listdir(directory):
+        for filename in os.listdir(directory+'/'+subdirectory):
+            print(filename)
+            if filename.endswith(".cif"):
 
-            mmcif_dict = MMCIF2Dict(filename)
+                mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
-            #name = filename.rstrip(".cif")
-            mw = get_MW(mmcif_dict)
-            date = get_date(mmcif_dict)
+                #name = filename.rstrip(".cif")
+                mw = float(get_MW(mmcif_dict))
+                date = str(get_date(mmcif_dict))
 
-            if date in dict:
-                dict[date].append(mw)
+                print((mw,date))
+
+                if date in dict.keys():
+                    dict[date].append(mw) #can't .append() onto a float
+                else:
+                    dict[date] = mw
+                continue
             else:
-                dict[date] = mw
-            continue
-        else:
-            continue
+                continue
 
 
     num_deposits_array = []
@@ -107,6 +111,16 @@ def main():
     for date in dict:
         num_deposits_array.append(len(dict[date]))
 
-    plot_data(dict, num_deposits_array)
+    #plot_data(dict, num_deposits_array)
 
 main()
+
+
+#works!!
+def test_dir():
+    directory = '/databases/mol/mmCIF'
+    for dir2 in os.listdir(directory):
+        for filename in os.listdir(directory+'/'+dir2):
+            print(filename)
+
+#test_dir()
