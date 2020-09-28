@@ -98,9 +98,9 @@ def main():
                 print((mw,date))
 
                 if date in dict.keys():
-                    dict[date].append(mw) #can't .append() onto a float
+                    dict[date].append(mw)
                 else:
-                    dict[date] = mw
+                    dict[date] = [mw] #make a new list
                 continue
             else:
                 continue
