@@ -4,75 +4,79 @@ Programming Fundamentals (Computation in Biophysics) Final Project
 Goal: Produce a histogram of all the PDB entries by date. 2 Y-axes: Average
         MW and number of structures
 
-Authors: Andrew Alamban and Ben Orr
+Author: Ben Orr (Adapted from Andrew Alamban)
 """
-
 import os
-import numpy as np
-import matplotlib.pyplot as plt
+from Bio.PDB import MMCIFParser
+from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 
-def get_filename():
-    directory = '/databases/mol/mmCIF'
+parser = MMCIFParser()
 
-    #for directory2 in os.listdir(directory)
-    for filename in os.listdir(directory): #(directory2)
-        if filename.endswith(".pdb"):
-          #do smth
-          continue
-        else:
-        continue
-
+def go_through_database(data):
+    """ This section is supposed to iterate through all the files of the
+    database and then begin to organize the dictionary that will help us
+    manipulate the data that we will plot later. The input is the initial
+    empty dictionary. """
+    directory = os.getcwd()
+    for subdir, dirs, files in os.walk(directory): #walks through directories
+            for file in files:
+                if file.endswith('.cif'):
+                    location = os.path.join(file)
+                    organize_data(location, data)
+    #I am having issues of accessing the last file in a directory. I think that
+    #the 'cursor' is moving on to the next directory without opening the last
+    #file.
+    return data
 
 def get_MW(mmcif_dict):
-    date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
-    print(date)
     mass = mmcif_dict["_entity.formula_weight"]
-    print(mass)
+    """print(mass)
     weight = 0
     for unit in mass:
         weight += float(unit)
-    print(weight)
+    print(weight)"""
+    return mass
 
+def get_date(mmcif_dict):
+    date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
+    #print(date)
+    return date
 
-def plot_data(array_of_tuples):
-    """
-# Create some mock data
-t = np.arange(0.01, 10.0, 0.01)
-data1 = np.exp(t)
-data2 = np.sin(2 * np.pi * t)
+def data_for_plot(dictionary):
+    """ Takes the initial dictionary created as an input and, using that, create
+    a tuple of the information that's necessary for plotting in the following
+    format: (deposit date, # of structures, average MW) """
 
-fig, ax1 = plt.subplots()
+    final_data = []
+    sorted_dict = sorted(dictionary.keys()) #To have chronological order dict.
+    for key in sorted_dict:
+        date = key
+        total_structures = len(dictionary[key])
+        avg_mw = sum(dictionary[key])/total_structures
+        data = final_data.append((date, total_structures, avg_mw))
+    return final_data
 
-color = 'tab:red'
-ax1.set_xlabel('time (s)')
-ax1.set_ylabel('exp', color=color)
-ax1.plot(t, data1, color=color)
-ax1.tick_params(axis='y', labelcolor=color)
-
-ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-
-color = 'tab:blue'
-ax2.set_ylabel('sin', color=color)  # we already handled the x-label with ax1
-ax2.plot(t, data2, color=color)
-ax2.tick_params(axis='y', labelcolor=color)
-
-fig.tight_layout()  # otherwise the right y-label is slightly clipped
-plt.show()
-    """
-
-
+def organize_data(file, data):
+    """ Create a dictionary which contains the date and molecular weights of
+    the .cif files specified """
+    mmcif_dict = MMCIF2Dict(file) #get a dict for non-struct
+    #print(get_date(mmcif_dict)[0])
+    data[get_date(mmcif_dict)[0]] = [float(i) for i in get_MW(mmcif_dict)]
+    return data
 
 def main():
     #for cif in list_of_cifs , say. Or, we could feed the cifs into the
     #program one-by-one
-    #get_filename - return .cif file
-    mmcif_dict = MMCIF2Dict("6yyt.cif") #get a dict for non-struct info
-    tuple = (get_date(mmcif_dict), get_MW(mmcif_dict))
-
-
-
-
-
+    files = ["6yyt.cif", "1axc.cif"] #Might need to change this to a
+                                          #directory
+    data = dict()
+    #I need to figure out a way to iterate through files in a directory
+    data = go_through_database(data)
+    #print(data)
+    new_data = sorted(data.keys())
+    #print(new_data)
+    plot_this = data_for_plot(data)
+    #print(plot_this)
 
 
 main()
