@@ -10,6 +10,7 @@ Authors: Andrew Alamban and Ben Orr
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import defaultdict #for multidict structure
 
 
 #currently don't use this f(x), instead copied this code in main()
@@ -44,7 +45,7 @@ def get_date(mmcif_dict):
 
 
 
-def plot_data(): #array_of_tuples):
+def plot_data(dict, num_deposits_array): #array_of_tuples):
 
     #Create some mock data
     t = np.arange(0.01, 10.0, 0.01)
@@ -80,7 +81,6 @@ def main():
     #tuple = (get_date(mmcif_dict), get_MW(mmcif_dict))
 
     directory = '/databases/mol/mmCIF'
-    array_of_tuples = []
     dict = {}
 
     #for directory2 in os.listdir(directory)
@@ -89,24 +89,24 @@ def main():
 
             mmcif_dict = MMCIF2Dict(filename)
 
-            name = filename.rstrip(".cif")
+            #name = filename.rstrip(".cif")
             mw = get_MW(mmcif_dict)
             date = get_date(mmcif_dict)
 
-            """
-            if date in dict{}:
-                add the new info to the existing index
+            if date in dict:
+                dict[date].append(mw)
             else:
-                create a new index with info
-            """
-
+                dict[date] = mw
             continue
         else:
             continue
 
+
+    num_deposits_array = []
+
     for date in dict:
+        num_deposits_array.append(len(dict[date]))
 
+    plot_data(dict, num_deposits_array)
 
-
-#main()
-plot_data()
+main()
