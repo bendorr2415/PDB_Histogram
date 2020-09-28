@@ -9,6 +9,7 @@ Authors: Andrew Alamban and Ben Orr
 
 import os
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from collections import defaultdict #for multidict structure
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
@@ -46,19 +47,29 @@ def get_date(mmcif_dict):
 
 
 
-def plot_data(dict, num_deposits_array): #array_of_tuples):
+def plot_data(dict, num_deposits_array):
 
     #Create some mock data
     t = np.arange(0.01, 10.0, 0.01)
     data1 = np.exp(t)
     data2 = np.sin(2 * np.pi * t)
 
+    #Plot #1: Average MW
+    average_mw_array = []
+    date_array = []
+    for date in dict.keys():
+        date_array.append(date)
+        ave_mw = np.average(dict[date])
+        average_mw_array.append(ave_mw)
+
     fig, ax1 = plt.subplots()
 
     color = 'tab:red'
-    ax1.set_xlabel('time (s)')
-    ax1.set_ylabel('exp', color=color)
-    ax1.plot(t, data1, color=color)
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('Average MW', color=color)
+    #in example, ax1.plot takes np arrays as data. Do python arrays work here?
+    ax1.plot(date_array, average_mw_array, color=color)
+    #ax1.plot(t, data1, color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
@@ -84,26 +95,34 @@ def main():
     directory = '/databases/mol/mmCIF'
     dict = defaultdict(list)
 
+    #test size
+    i = 0
+
     for subdirectory in os.listdir(directory):
-        for filename in os.listdir(directory+'/'+subdirectory):
-            print(filename)
-            if filename.endswith(".cif"):
+        #test size
+        if(i<50):
+            for filename in os.listdir(directory+'/'+subdirectory):
+                print(filename)
+                if filename.endswith(".cif"):
 
-                mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
+                    #test size
+                    i+=1
 
-                #name = filename.rstrip(".cif")
-                mw = float(get_MW(mmcif_dict))
-                date = str(get_date(mmcif_dict))
+                    mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
-                print((mw,date))
+                    #name = filename.rstrip(".cif")
+                    mw = float(get_MW(mmcif_dict))
+                    date = str(get_date(mmcif_dict))
 
-                if date in dict.keys():
-                    dict[date].append(mw)
+                    print((date,mw))
+
+                    if date in dict.keys():
+                        dict[date].append(mw)
+                    else:
+                        dict[date] = [mw] #make a new list
+                    continue
                 else:
-                    dict[date] = [mw] #make a new list
-                continue
-            else:
-                continue
+                    continue
 
 
     num_deposits_array = []
@@ -111,7 +130,9 @@ def main():
     for date in dict:
         num_deposits_array.append(len(dict[date]))
 
-    #plot_data(dict, num_deposits_array)
+    print(num_deposits_array)
+
+    plot_data(dict, num_deposits_array)
 
 main()
 
