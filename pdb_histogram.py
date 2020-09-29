@@ -27,25 +27,36 @@ def get_filename():
         else:
             continue
 
-
+#Uses Biopython MMCIF2Dict to extract MW data
 def get_MW(mmcif_dict):
-    #mmcif_dict = MMCIF2Dict(filename) #get a dict for non-struct info
-    #date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
-    #print(date)
     mass = mmcif_dict["_entity.formula_weight"]
-    #print(mass)
     weight = 0
     for unit in mass:
         weight += float(unit)
-    #print(weight)
     return weight
 
+#Uses Biopython MMCIF2Dict to extract deposition date data
 def get_date(mmcif_dict):
     date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
-    #print(date)
     return date
 
+#Takes the unsorted dictionary (key = date, value = list of MWs) and
+#   returns an array of tuples, each containing the dictionary's information
+#   plus the number of structures deposited on that date, sorted by date
+def sort_dict(dict):
+    """ Takes the initial dictionary created as an input and, using that, create
+    a tuple of the information that's necessary for plotting in the following
+    format: (deposit date, # of structures, average MW). Also sorts the
+    dictionary by date, and returns all this information in an array of tuples. """
 
+    final_data = []
+    sorted_dict = sorted(dict.keys()) #To have chronological order dict.
+    for key in sorted_dict:
+        date = key
+        total_structures = len(dict[key])
+        avg_mw = sum(dict[key])/total_structures
+        data = final_data.append((date, total_structures, avg_mw))
+    return final_data
 
 def plot_data(dict, num_deposits_array):
 
@@ -54,6 +65,7 @@ def plot_data(dict, num_deposits_array):
     data1 = np.exp(t)
     data2 = np.sin(2 * np.pi * t)
 
+    """
     #Plot #1: Average MW
     average_mw_array = []
     date_array = []
@@ -62,6 +74,7 @@ def plot_data(dict, num_deposits_array):
         ave_mw = sum(dict[date])/len(dict[date])
         #ave_mw = np.average(dict[date])
         average_mw_array.append(ave_mw)
+    """
 
     fig, ax1 = plt.subplots()
 
@@ -69,8 +82,9 @@ def plot_data(dict, num_deposits_array):
     ax1.set_xlabel('Date')
     ax1.set_ylabel('Average MW', color=color)
     #in example, ax1.plot takes np arrays as data. Do python arrays work here?
-    ax1.plot(date_array, average_mw_array, color=color)
-    #ax1.plot(t, data1, color=color)
+
+    #ax1.plot(date_array, average_mw_array, color=color)
+    ax1.plot(t, data1, color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
@@ -86,25 +100,20 @@ def plot_data(dict, num_deposits_array):
 
 
 def main():
-    #for cif in list_of_cifs , say. Or, we could feed the cifs into the
-    #program one-by-one
-    #get_filename - return .cif file
-
-    #mmcif_dict = MMCIF2Dict("6yyt.cif") #get a dict for non-struct info
-    #tuple = (get_date(mmcif_dict), get_MW(mmcif_dict))
 
     directory = '/databases/mol/mmCIF'
+
     #defaultdict allows for a dictionary full of key:lists
     dict = defaultdict(list)
 
     #test size
     i = 0
 
-    print(os.listdir(directory)) #out of interest
     for subdirectory in os.listdir(directory):
-        print(subdirectory) #also out of interest
+
         #test size
         if(i<50):
+
             for filename in os.listdir(directory+'/'+subdirectory):
                 print(filename)
                 if filename.endswith(".cif"):
@@ -114,7 +123,6 @@ def main():
 
                     mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
-                    #name = filename.rstrip(".cif")
                     mw = float(get_MW(mmcif_dict))
                     date = str(get_date(mmcif_dict))
 
@@ -128,15 +136,18 @@ def main():
                 else:
                     continue
 
+    sorted_dict = sort_dict(dict)
 
+    """
     num_deposits_array = []
 
     for date in dict:
         num_deposits_array.append(len(dict[date]))
 
     print(num_deposits_array)
+    """
 
-    plot_data(dict, num_deposits_array)
+    #plot_data(sorted_dict)
 
 main()
 
