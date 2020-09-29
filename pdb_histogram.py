@@ -6,7 +6,7 @@ Goal: Produce a histogram of all the PDB entries by date. 2 Y-axes: Average
 
 Authors: Andrew Alamban and Ben Orr
 """
-
+#!/usr/bin/env python3
 import os
 import numpy as np
 import pandas as pd
@@ -40,6 +40,20 @@ def get_date(mmcif_dict):
     date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
     return date
 
+
+def create_list(dict):
+    """ Create some arrays so that we can use it to turn into a pandas dataframe
+    for some easy organization of our data. """
+    dates = dict.keys()
+    weights = []
+    new_dates = []
+    for date in dates:
+        weights.append(dict[date][0])
+        new_dates.append(date)
+    weights = np.array(weights)
+    new_dates = np.array(new_dates)    
+    return new_dates, weights
+
 #Takes the unsorted dictionary (key = date, value = list of MWs) and
 #   returns an array of tuples, each containing the dictionary's information
 #   plus the number of structures deposited on that date, sorted by date
@@ -58,7 +72,11 @@ def sort_dict(dict):
         data = final_data.append((date, total_structures, avg_mw))
     return final_data
 
+
+def plot_data(dict, num_deposits_array):
+
 def plot_data():
+
 
     #Create some mock data
     t = np.arange(0.01, 10.0, 0.01)
@@ -110,13 +128,19 @@ def main():
     #test size
     i = 0
 
+
+    #print(os.listdir(directory)) #out of interest
     for subdirectory in os.listdir(directory):
+        #print(subdirectory) #also out of interest
+
+    for subdirectory in os.listdir(directory):
+
 
         #test size
         if(i<50):
 
             for filename in os.listdir(directory+'/'+subdirectory):
-                print(filename)
+               # print(filename)
                 if filename.endswith(".cif"):
 
                     #test size
@@ -125,9 +149,9 @@ def main():
                     mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
                     mw = float(get_MW(mmcif_dict))
-                    date = str(get_date(mmcif_dict))
+                    date = get_date(mmcif_dict)[0]
 
-                    print((date,mw))
+                   # print((date,mw))
 
                     if date in dict.keys():
                         dict[date].append(mw)
@@ -145,10 +169,24 @@ def main():
     for date in dict:
         num_deposits_array.append(len(dict[date]))
 
+
+    #print(num_deposits_array)
+    dates, weights = create_list(dict)
+    num_deposits_array = np.array(num_deposits_array)
+   # print(num_deposits_array)
+   # print(dates)
+   # print(weights)
+   # print(type(dates))
+    data = {"Dates":dates, "Number of Structures":num_deposits_array, "Weights":weights}
+    df = pd.DataFrame(data)
+    print(df)
+    plot_data(dict, num_deposits_array)
+
     print(num_deposits_array)
     """
 
     plot_data()
+
 
 main()
 
