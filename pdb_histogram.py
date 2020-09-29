@@ -32,7 +32,10 @@ def get_MW(mmcif_dict):
     mass = mmcif_dict["_entity.formula_weight"]
     weight = 0
     for unit in mass:
-        weight += float(unit)
+        try: #in case a unit in mass is a '?'
+            weight += float(unit)
+        except:
+            continue
     return weight
 
 #Uses Biopython MMCIF2Dict to extract deposition date data
@@ -147,6 +150,7 @@ def main():
 
                 mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
+                #Error: sometimes get_MW returns a '?' - handled in get_MW
                 mw = float(get_MW(mmcif_dict))
                 date = get_date(mmcif_dict)[0]
 
