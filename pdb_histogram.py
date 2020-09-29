@@ -51,7 +51,7 @@ def create_list(dict):
         weights.append(dict[date][0])
         new_dates.append(date)
     weights = np.array(weights)
-    new_dates = np.array(new_dates)    
+    new_dates = np.array(new_dates)
     return new_dates, weights
 
 #Takes the unsorted dictionary (key = date, value = list of MWs) and
@@ -73,11 +73,17 @@ def sort_dict(dict):
     return final_data
 
 
-def plot_data(dict, num_deposits_array):
+def plot_hist(data):
+    df = pd.DataFrame(data)
+    data.plot(x='Dates',y='Weights',kind='bar',color='red')
+    ax=data['Number of Structures'].plot(secondary_y=True,color='blue',kind='bar')
+    ax.set_ylabel('num of struc')
+    plt.show()
 
+
+
+#This f(x) is no longer in use
 def plot_data():
-
-
     #Create some mock data
     t = np.arange(0.01, 10.0, 0.01)
     data1 = np.exp(t)
@@ -163,8 +169,10 @@ def main():
     dates, weights = create_list(dict)
     num_deposits_array = np.array(num_deposits_array)
     data = {"Dates":dates, "Number of Structures":num_deposits_array, "Weights":weights}
-    df = pd.DataFrame(data) #will use this data to plot histogram
+    #I made the df in plot_hist
+    #df = pd.DataFrame(data) #will use this data to plot histogram
     #Need a plotting function
     #create_histogram()
+    plot_hist(data)
 
 main()
