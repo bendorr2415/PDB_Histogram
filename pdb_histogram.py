@@ -59,7 +59,8 @@ def plot_data(dict, num_deposits_array):
     date_array = []
     for date in dict.keys():
         date_array.append(date)
-        ave_mw = np.average(dict[date])
+        ave_mw = sum(dict[date])/len(dict[date])
+        #ave_mw = np.average(dict[date])
         average_mw_array.append(ave_mw)
 
     fig, ax1 = plt.subplots()
@@ -93,12 +94,15 @@ def main():
     #tuple = (get_date(mmcif_dict), get_MW(mmcif_dict))
 
     directory = '/databases/mol/mmCIF'
+    #defaultdict allows for a dictionary full of key:lists
     dict = defaultdict(list)
 
     #test size
     i = 0
 
+    print(os.listdir(directory)) #out of interest
     for subdirectory in os.listdir(directory):
+        print(subdirectory) #also out of interest
         #test size
         if(i<50):
             for filename in os.listdir(directory+'/'+subdirectory):
@@ -120,7 +124,7 @@ def main():
                         dict[date].append(mw)
                     else:
                         dict[date] = [mw] #make a new list
-                    continue
+                    #continue
                 else:
                     continue
 
