@@ -75,6 +75,9 @@ def sort_dict(dict):
 
 def plot_data(dict, num_deposits_array):
 
+def plot_data():
+
+
     #Create some mock data
     t = np.arange(0.01, 10.0, 0.01)
     data1 = np.exp(t)
@@ -111,6 +114,7 @@ def plot_data(dict, num_deposits_array):
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
     plt.show()
+    #Look for cmd to Save motplotlib image, plt.save() or something, savefig()
 
 
 
@@ -181,7 +185,7 @@ def main():
     print(num_deposits_array)
     """
 
-    #plot_data(sorted_dict)
+    plot_data()
 
 
 main()
