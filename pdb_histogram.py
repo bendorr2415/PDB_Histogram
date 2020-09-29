@@ -75,7 +75,7 @@ def sort_dict(dict):
 
 def plot_hist(data):
     df = pd.DataFrame(data)
-    data.plot(x='Dates',y='Weights',kind='bar',color='red')
+    df.plot(x='Dates',y='Weights',kind='bar',color='red')
     ax=data['Number of Structures'].plot(secondary_y=True,color='blue',kind='bar')
     ax.set_ylabel('num of struc')
     plt.show()
