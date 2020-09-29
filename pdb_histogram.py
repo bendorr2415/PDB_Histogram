@@ -128,14 +128,7 @@ def main():
     #test size
     i = 0
 
-
-    #print(os.listdir(directory)) #out of interest
     for subdirectory in os.listdir(directory):
-        #print(subdirectory) #also out of interest
-
-    for subdirectory in os.listdir(directory):
-
-
         #test size
         if(i<50):
 
@@ -163,39 +156,15 @@ def main():
 
     sorted_dict = sort_dict(dict)
 
-    """
     num_deposits_array = []
 
     for date in dict:
         num_deposits_array.append(len(dict[date]))
-
-
-    #print(num_deposits_array)
     dates, weights = create_list(dict)
     num_deposits_array = np.array(num_deposits_array)
-   # print(num_deposits_array)
-   # print(dates)
-   # print(weights)
-   # print(type(dates))
     data = {"Dates":dates, "Number of Structures":num_deposits_array, "Weights":weights}
-    df = pd.DataFrame(data)
-    print(df)
-    plot_data(dict, num_deposits_array)
-
-    print(num_deposits_array)
-    """
-
-    plot_data()
-
+    df = pd.DataFrame(data) #will use this data to plot histogram
+    #Need a plotting function
+    #create_histogram()
 
 main()
-
-
-#works!!
-def test_dir():
-    directory = '/databases/mol/mmCIF'
-    for dir2 in os.listdir(directory):
-        for filename in os.listdir(directory+'/'+dir2):
-            print(filename)
-
-#test_dir()
