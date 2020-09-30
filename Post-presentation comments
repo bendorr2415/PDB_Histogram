@@ -6,3 +6,5 @@ Pros:
 Cons:
 -Bin data for legibility
 -Could include diagram/schematic for data structures for audience readability
+-Not a con, but Dominic and Daphne used a web service to accomplish the job, which is computationally cheaper
+  -They used rcsb web service to do a custom search to get the date and weights as parameters
