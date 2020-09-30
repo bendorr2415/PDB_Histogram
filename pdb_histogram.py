@@ -15,7 +15,7 @@ from collections import defaultdict #for multidict structure
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 
 
-#Uses Biopython MMCIF2Dict to extract MW data
+"""Uses Biopython MMCIF2Dict to extract MW data"""
 def get_MW(mmcif_dict):
     mass = mmcif_dict["_entity.formula_weight"]
     weight = 0
@@ -26,7 +26,7 @@ def get_MW(mmcif_dict):
             continue
     return weight
 
-#Uses Biopython MMCIF2Dict to extract deposition date data
+"""Uses Biopython MMCIF2Dict to extract deposition date data"""
 def get_date(mmcif_dict):
     date = mmcif_dict["_pdbx_database_status.recvd_initial_deposition_date"]
     return date
@@ -45,9 +45,9 @@ def create_list(dict):
     new_dates = np.array(new_dates)
     return new_dates, weights
 
-#Takes the unsorted dictionary (key = date, value = list of MWs) and
-#   returns an array of tuples, each containing the dictionary's information
-#   plus the number of structures deposited on that date, sorted by date
+"""Takes the unsorted dictionary (key = date, value = list of MWs) and
+   returns an array of tuples, each containing the dictionary's information
+   plus the number of structures deposited on that date, sorted by date"""
 def sort_dict(dict):
     """Takes the unsorted dictionary, sorts this dictionary by date, and
     returns the sorted dictionary"""
@@ -81,9 +81,9 @@ def create_histogram(dataframe):
     fig.savefig('/wynton/home/rotation/aalamban/comp_course/fig_1.png')
 
 
-#Iterates through directories and mmCIF files, converts each file to a dictionary, and extracts
-#MW and date data from these dictionaries and loads these data into a new dictionary and
-#returns this dictionary
+"""Iterates through directories and mmCIF files, converts each file to a dictionary, and extracts
+MW and date data from these dictionaries and loads these data into a new dictionary and
+returns this dictionary"""
 def read_in_data():
     directory = '/databases/mol/mmCIF'
 
@@ -122,7 +122,7 @@ def read_in_data():
     return dict
 
 
-#Loads the date, num deposits, and ave mw data into numpy arrays and returns these arrays
+"""Loads the date, num deposits, and ave mw data into numpy arrays and returns these arrays"""
 def create_np_arrays(sorted_dict):
     num_deposits_array = [] 
     ave_mw_array = []    
