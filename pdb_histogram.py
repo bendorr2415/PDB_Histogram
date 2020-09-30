@@ -72,51 +72,26 @@ def sort_dict(dict):
         data = final_data.append((date, total_structures, avg_mw))
     return final_data
 
+def create_histogram(dataframe):
+    """ Taking a pd dataframe as an input, create a plot that has two y-axes:
+    1) avg. molecular weight of files deposited that day
+    2) number of files deposited that day
+    Output will result in a .png file """
 
-def plot_data(dict, num_deposits_array):
+    df = dataframe
+    fig = plt.figure() #create matplotlib figure    
+    
+    ax = fig.add_subplot(111) #create some axes
+    ax2 = ax.twinx() # create second axis for scaling
 
-def plot_data():
+    df['Weights'].plot(kind='bar',color='red',ax=ax,width=0.4,position=1)
+    df['Number of Structures'].plot(kind='bar',color='blue',ax=ax2,width=0.4,position=0)
 
-
-    #Create some mock data
-    t = np.arange(0.01, 10.0, 0.01)
-    data1 = np.exp(t)
-    data2 = np.sin(2 * np.pi * t)
-
-    """
-    #Plot #1: Average MW
-    average_mw_array = []
-    date_array = []
-    for date in dict.keys():
-        date_array.append(date)
-        ave_mw = sum(dict[date])/len(dict[date])
-        #ave_mw = np.average(dict[date])
-        average_mw_array.append(ave_mw)
-    """
-
-    fig, ax1 = plt.subplots()
-
-    color = 'tab:red'
-    ax1.set_xlabel('Date')
-    ax1.set_ylabel('Average MW', color=color)
-    #in example, ax1.plot takes np arrays as data. Do python arrays work here?
-
-    #ax1.plot(date_array, average_mw_array, color=color)
-    ax1.plot(t, data1, color=color)
-    ax1.tick_params(axis='y', labelcolor=color)
-
-    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-
-    color = 'tab:blue'
-    ax2.set_ylabel('sin', color=color)  # we already handled the x-label with ax1
-    ax2.plot(t, data2, color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
-
-    fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    plt.show()
-    #Look for cmd to Save motplotlib image, plt.save() or something, savefig()
-
-
+    ax.set_ylabel('Avg. MW (Da)')
+    ax2.set_ylabel('# of Structures')
+    
+    #plt.show() #will need to do a 'save to png' function for the final product
+    fig.savefig('/wynton/home/rotation/aalamban/comp_course/fig_1.png')
 
 def main():
 
@@ -164,7 +139,7 @@ def main():
     num_deposits_array = np.array(num_deposits_array)
     data = {"Dates":dates, "Number of Structures":num_deposits_array, "Weights":weights}
     df = pd.DataFrame(data) #will use this data to plot histogram
-    #Need a plotting function
-    #create_histogram()
+    df = df.set_index('Dates')
+    create_histogram(df)
 
 main()
