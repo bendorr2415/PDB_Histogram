@@ -80,8 +80,11 @@ def create_histogram(dataframe):
     #plt.show() #will need to do a 'save to png' function for the final product
     fig.savefig('/wynton/home/rotation/aalamban/comp_course/fig_1.png')
 
-def main():
 
+#Iterates through directories and mmCIF files, converts each file to a dictionary, and extracts
+#MW and date data from these dictionaries and loads these data into a new dictionary and
+#returns this dictionary
+def read_in_data():
     directory = '/databases/mol/mmCIF'
 
     #defaultdict allows for a dictionary full of key:lists
@@ -116,9 +119,11 @@ def main():
                 #continue
             else:
                 continue
+    return dict
 
-    sorted_dict = sort_dict(dict) #To sort data in chronological order, by date
 
+#Loads the date, num deposits, and ave mw data into numpy arrays and returns these arrays
+def create_np_arrays(sorted_dict):
     num_deposits_array = [] 
     ave_mw_array = []    
 
@@ -130,6 +135,17 @@ def main():
     dates, weights = create_list(sorted_dict)
     ave_mw_array = np.array(ave_mw_array)
     num_deposits_array = np.array(num_deposits_array)
+
+    return dates, num_deposit_array, ave_mw_array
+
+                
+def main():
+
+    dict = read_in_data()
+
+    sorted_dict = sort_dict(dict) #To sort data in chronological order, by date
+
+    dates, num_deposit_array, ave_mw_array = create_np_arrays(sorted_dict)
     
     data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":ave_mw_array}
     df = pd.DataFrame(data) #will use this data to plot histogram
