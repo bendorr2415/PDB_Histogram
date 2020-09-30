@@ -15,18 +15,6 @@ from collections import defaultdict #for multidict structure
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 
 
-#currently don't use this f(x), instead copied this code in main()
-def get_filename():
-    directory = '/databases/mol/mmCIF'
-
-    #for directory2 in os.listdir(directory)
-    for filename in os.listdir(directory): #(directory2)
-        if filename.endswith(".cif"):
-          #do smth
-          continue
-        else:
-            continue
-
 #Uses Biopython MMCIF2Dict to extract MW data
 def get_MW(mmcif_dict):
     mass = mmcif_dict["_entity.formula_weight"]
@@ -61,10 +49,8 @@ def create_list(dict):
 #   returns an array of tuples, each containing the dictionary's information
 #   plus the number of structures deposited on that date, sorted by date
 def sort_dict(dict):
-    """ Takes the initial dictionary created as an input and, using that, create
-    a tuple of the information that's necessary for plotting in the following
-    format: (deposit date, # of structures, average MW). Also sorts the
-    dictionary by date, and returns all this information in an array of tuples. """
+    """Takes the unsorted dictionary, sorts this dictionary by date, and
+    returns the sorted dictionary"""
 
     final_data = {}
     sorted_dict = sorted(dict.keys()) #To have chronological order dict.
@@ -131,15 +117,17 @@ def main():
             else:
                 continue
 
-    sorted_dict = sort_dict(dict) #To sort data in chronological order
+    sorted_dict = sort_dict(dict) #To sort data in chronological order, by date
 
     num_deposits_array = [] 
     ave_mw_array = []    
 
     for date in sorted_dict:
         num_deposits_array.append(len(sorted_dict[date])) #To count # of deposited structures per date
-        ave_mw_array.append(sum(sorted_dict[date])/len(sorted_dict[date]))
-    dates, weights = create_list(sorted_dict) #Create np arrays for use in pandas
+        ave_mw_array.append(sum(sorted_dict[date])/len(sorted_dict[date])) #Calculate average mw for each day, and put these values into an array
+    
+    #Create np arrays for use in pandas
+    dates, weights = create_list(sorted_dict)
     ave_mw_array = np.array(ave_mw_array)
     num_deposits_array = np.array(num_deposits_array)
     
