@@ -140,9 +140,10 @@ def main():
         num_deposits_array.append(len(sorted_dict[date])) #To count # of deposited structures per date
         ave_mw_array.append(sum(sorted_dict[date])/len(sorted_dict[date]))
     dates, weights = create_list(sorted_dict) #Create np arrays for use in pandas
+    ave_mw_array = np.array(ave_mw_array)
     num_deposits_array = np.array(num_deposits_array)
     
-    data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":weights}
+    data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":ave_mw_array}
     df = pd.DataFrame(data) #will use this data to plot histogram
     df = df.set_index('Dates')
     
