@@ -137,9 +137,9 @@ def main():
 
     num_deposits_array = []
 
-    for date in dict:
-        num_deposits_array.append(len(dict[date]))
-    dates, weights = create_list(dict)
+    for date in sorted_dict:
+        num_deposits_array.append(len(sorted_dict[date]))
+    dates, weights = create_list(sorted_dict)
     num_deposits_array = np.array(num_deposits_array)
     
     data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":weights}
