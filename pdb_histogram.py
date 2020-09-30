@@ -87,8 +87,8 @@ def create_histogram(dataframe):
     ax = fig.add_subplot(111) #create some axes
     ax2 = ax.twinx() # create second axis for scaling
 
-    df['Weights'].plot(kind='bar',color='red',ax=ax,position=1)
-    df['Number of Structures'].plot(kind='bar',color='blue',ax=ax2,position=0)
+    df['Avg. MW'].plot(kind='bar',color='red',ax=ax,position=1,legend=True)
+    df['# of Struc.'].plot(kind='bar',color='blue',ax=ax2,position=0,legend=True)
 
     ax.set_ylabel('Avg. MW (Da)')
     ax2.set_ylabel('# of Structures')
