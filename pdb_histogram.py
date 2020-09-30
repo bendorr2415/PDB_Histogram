@@ -70,7 +70,7 @@ def sort_dict(dict):
     sorted_dict = sorted(dict.keys()) #To have chronological order dict.
     for key in sorted_dict:
         date = key
-        final_data[date] = dict[key]
+        final_data[date] = dict[key] 
     return final_data
 
 def create_histogram(dataframe):
@@ -131,13 +131,15 @@ def main():
             else:
                 continue
 
-    sorted_dict = sort_dict(dict)
+    sorted_dict = sort_dict(dict) #To sort data in chronological order
 
-    num_deposits_array = []
+    num_deposits_array = [] 
+    ave_mw_array = []    
 
     for date in sorted_dict:
-        num_deposits_array.append(len(sorted_dict[date]))
-    dates, weights = create_list(sorted_dict)
+        num_deposits_array.append(len(sorted_dict[date])) #To count # of deposited structures per date
+        ave_mw_array.append(sum(sorted_dict[date])/len(sorted_dict[date]))
+    dates, weights = create_list(sorted_dict) #Create np arrays for use in pandas
     num_deposits_array = np.array(num_deposits_array)
     
     data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":weights}
