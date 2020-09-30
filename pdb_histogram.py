@@ -135,34 +135,34 @@ def main():
     dict = defaultdict(list)
 
     #test size
-    i = 0
+    #i = 0
 
     for subdirectory in os.listdir(directory):
         #test size
-        if(i<500):
+        #if(i<500):
 
-            for filename in os.listdir(directory+'/'+subdirectory):
-               # print(filename)
-                if filename.endswith(".cif"):
+        for filename in os.listdir(directory+'/'+subdirectory):
+           # print(filename)
+            if filename.endswith(".cif"):
 
-                    #test size
-                    i+=1
+                #test size
+                #i+=1
 
-                    mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
+                mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
-                    #Error: sometimes get_MW returns a '?' - handled in get_MW
-                    mw = float(get_MW(mmcif_dict))
-                    date = get_date(mmcif_dict)[0]
+                #Error: sometimes get_MW returns a '?' - handled in get_MW
+                mw = float(get_MW(mmcif_dict))
+                date = get_date(mmcif_dict)[0]
 
-                   # print((date,mw))
+               # print((date,mw))
 
-                    if date in dict.keys():
-                        dict[date].append(mw)
-                    else:
-                        dict[date] = [mw] #make a new list
-                    #continue
+                if date in dict.keys():
+                    dict[date].append(mw)
                 else:
-                    continue
+                    dict[date] = [mw] #make a new list
+                #continue
+            else:
+                continue
 
     sorted_dict = sort_dict(dict)
 
