@@ -142,7 +142,7 @@ def main():
         #if(i<500):
 
         for filename in os.listdir(directory+'/'+subdirectory):
-           # print(filename)
+            print(filename)
             if filename.endswith(".cif"):
 
                 #test size
