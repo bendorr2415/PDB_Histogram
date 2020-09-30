@@ -135,18 +135,18 @@ def main():
     dict = defaultdict(list)
 
     #test size
-    #i = 0
+    i = 0
 
     for subdirectory in os.listdir(directory):
         #test size
-        #if(i<50):
+        if(i<500):
 
         for filename in os.listdir(directory+'/'+subdirectory):
            # print(filename)
             if filename.endswith(".cif"):
 
                 #test size
-                #i+=1
+                i+=1
 
                 mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
