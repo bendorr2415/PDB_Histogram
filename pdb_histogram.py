@@ -66,13 +66,11 @@ def sort_dict(dict):
     format: (deposit date, # of structures, average MW). Also sorts the
     dictionary by date, and returns all this information in an array of tuples. """
 
-    final_data = []
+    final_data = {}
     sorted_dict = sorted(dict.keys()) #To have chronological order dict.
     for key in sorted_dict:
         date = key
-        total_structures = len(dict[key])
-        avg_mw = sum(dict[key])/total_structures
-        data = final_data.append((date, total_structures, avg_mw))
+        final_data[date] = dict[key]
     return final_data
 
 def create_histogram(dataframe):
