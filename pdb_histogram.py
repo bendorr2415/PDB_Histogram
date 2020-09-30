@@ -142,7 +142,7 @@ def main():
     dates, weights = create_list(dict)
     num_deposits_array = np.array(num_deposits_array)
     
-    data = {"Dates":dates, "Number of Structures":num_deposits_array, "Weights":weights}
+    data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":weights}
     df = pd.DataFrame(data) #will use this data to plot histogram
     df = df.set_index('Dates')
     
