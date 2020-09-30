@@ -56,7 +56,7 @@ def sort_dict(dict):
     sorted_dict = sorted(dict.keys()) #To have chronological order dict.
     for key in sorted_dict:
         date = key
-        final_data[date] = dict[key] 
+        final_data[date] = dict[key]
     return final_data
 
 def create_histogram(dataframe):
@@ -66,8 +66,8 @@ def create_histogram(dataframe):
     Output will result in a .png file """
 
     df = dataframe
-    fig = plt.figure() #create matplotlib figure    
-    
+    fig = plt.figure() #create matplotlib figure
+
     ax = fig.add_subplot(111) #create some axes
     ax2 = ax.twinx() # create second axis for scaling
 
@@ -76,9 +76,9 @@ def create_histogram(dataframe):
 
     ax.set_ylabel('Avg. MW (Da)')
     ax2.set_ylabel('# of Structures')
-    
-    #plt.show() #will need to do a 'save to png' function for the final product
-    fig.savefig('/wynton/home/rotation/aalamban/comp_course/fig_1.png')
+
+    plt.show() #will need to do a 'save to png' function for the final product
+    #fig.savefig('/wynton/home/rotation/aalamban/comp_course/fig_1.png')
 
 
 """Iterates through directories and mmCIF files, converts each file to a dictionary, and extracts
@@ -91,66 +91,67 @@ def read_in_data():
     dict = defaultdict(list)
 
     #test size
-    #i = 0
+    i = 0
+    test_num = int(input('How many files?\n'))
 
     for subdirectory in os.listdir(directory):
         #test size
-        #if(i<500):
+        if(i<test_num):
 
-        for filename in os.listdir(directory+'/'+subdirectory):
-            print(filename)
-            if filename.endswith(".cif"):
+            for filename in os.listdir(directory+'/'+subdirectory):
+                print(filename)
+                if filename.endswith(".cif"):
 
-                #test size
-                #i+=1
+                    #test size
+                    i+=1
 
-                mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
+                    mmcif_dict = MMCIF2Dict(directory+'/'+subdirectory+'/'+filename)
 
-                #Error: sometimes get_MW returns a '?' - handled in get_MW
-                mw = float(get_MW(mmcif_dict))
-                date = get_date(mmcif_dict)[0]
+                    #Error: sometimes get_MW returns a '?' - handled in get_MW
+                    mw = float(get_MW(mmcif_dict))
+                    date = get_date(mmcif_dict)[0]
 
-               # print((date,mw))
+                   # print((date,mw))
 
-                if date in dict.keys():
-                    dict[date].append(mw)
+                    if date in dict.keys():
+                        dict[date].append(mw)
+                    else:
+                        dict[date] = [mw] #make a new list
+                    #continue
                 else:
-                    dict[date] = [mw] #make a new list
-                #continue
-            else:
-                continue
+                    continue
     return dict
 
 
 """Loads the date, num deposits, and ave mw data into numpy arrays and returns these arrays"""
 def create_np_arrays(sorted_dict):
-    num_deposits_array = [] 
-    ave_mw_array = []    
+    num_deposits_array = []
+    ave_mw_array = []
 
     for date in sorted_dict:
         num_deposits_array.append(len(sorted_dict[date])) #To count # of deposited structures per date
         ave_mw_array.append(sum(sorted_dict[date])/len(sorted_dict[date])) #Calculate average mw for each day, and put these values into an array
-    
+
     #Create np arrays for use in pandas
     dates, weights = create_list(sorted_dict)
     ave_mw_array = np.array(ave_mw_array)
     num_deposits_array = np.array(num_deposits_array)
 
-    return dates, num_deposit_array, ave_mw_array
+    return dates, num_deposits_array, ave_mw_array
 
-                
+
 def main():
 
     dict = read_in_data()
 
     sorted_dict = sort_dict(dict) #To sort data in chronological order, by date
 
-    dates, num_deposit_array, ave_mw_array = create_np_arrays(sorted_dict)
-    
+    dates, num_deposits_array, ave_mw_array = create_np_arrays(sorted_dict)
+
     data = {"Dates":dates, "# of Struc.":num_deposits_array, "Avg. MW":ave_mw_array}
     df = pd.DataFrame(data) #will use this data to plot histogram
     df = df.set_index('Dates')
-    
+
     create_histogram(df)
 
 main()
